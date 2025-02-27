@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Countdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f3f3f3, #ffebee); /* Gradient background */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .countdown-container {
+            text-align: center;
+            background: linear-gradient(to bottom, #ffffff, #f8bbd0); /* Subtle pink gradient */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            animation: slideUp 1.5s ease-in-out;
+            border: 2px solid #ff80ab; /* Bright pink border */
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #d81b60; /* Vibrant pink */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .countdown {
+            font-size: 50px;
+            font-weight: bold;
+            color: #e91e63; /* Bright pinkish-red */
+            animation: blink 1.5s infinite alternate;
+        }
+
+        .message {
+            font-size: 20px;
+            margin-top: 15px;
+            color: #ad1457; /* Darker pink */
+            font-style: italic;
+        }
+
+        .age {
+            font-size: 20px;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #880e4f; /* Deep magenta */
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="countdown-container">
+    <h1>Birthday Countdown</h1>
+    <div class="countdown" id="countdown"></div>
+    <div class="message" id="message"></div>
+    <div class="age" id="age"></div>
+</div>
+
+<script>
+    // Function to get the next birthday date
+    function getNextBirthday() {
+        const today = new Date();
+        let year = today.getFullYear();
+        let nextBirthday = new Date(`March 21, ${year} 00:00:00`).getTime();
+
+        // If this year's birthday has passed, set it to next year
+        if (today.getTime() > nextBirthday) {
+            nextBirthday = new Date(`March 21, ${year + 1} 00:00:00`).getTime();
+        }
+        return nextBirthday;
+    }
+
+    // Birth date for age calculation
+    const birthDate = new Date("March 21, 2008 00:00:00").getTime();
+
+    // Function to calculate total age
+    function calculateAge() {
+        const now = new Date().getTime();
+        const ageMilliseconds = now - birthDate;
+
+        const ageInSeconds = Math.floor(ageMilliseconds / 1000);
+        const ageInMinutes = Math.floor(ageInSeconds / 60);
+        const ageInHours = Math.floor(ageInMinutes / 60);
+        const ageInDays = Math.floor(ageInHours / 24);
+        const ageInMonths = Math.floor(ageInDays / 30.4375);
+        const ageInYears = Math.floor(ageInDays / 365.25);
+
+        const months = Math.floor((ageInDays % 365.25) / 30.4375);
+        const days = Math.floor(ageInDays % 30.4375);
+        const hours = ageInHours % 24;
+        const minutes = ageInMinutes % 60;
+        const seconds = ageInSeconds % 60;
+
+        document.getElementById("age").innerHTML = `Age: ${ageInYears} years, ${months} months, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    }
+
+    // Update countdown every second
+    function updateCountdown() {
+        const now = new Date().getTime();
+        let nextBirthday = getNextBirthday();
+        const distance = nextBirthday - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display countdown
+        const countdownElement = document.getElementById("countdown");
+        const messageElement = document.getElementById("message");
+
+        if (distance <= 0 && distance > -86400000) { // Within 24 hours after birthday
+            countdownElement.innerHTML = "Happy Birthday Mariya! 🎉";
+            messageElement.innerHTML = "Wishing you the best day ever!";
+            messageElement.style.display = "block";
+        } else {
+            countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            messageElement.style.display = "none";
+        }
+
+        // Update age
+        calculateAge();
+    }
+
+    // Run the countdown
+    setInterval(updateCountdown, 1000);
+</script>
+
+</body>
+</html>
